@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
+
+from document_extract import settings
 from document_extract_app import urls
 
 urlpatterns = [
@@ -23,3 +26,6 @@ urlpatterns = [
     url(r'^api/',include(urls.urlpatterns)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
+
+if settings.DEBUG:
+  urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

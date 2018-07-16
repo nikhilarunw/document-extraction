@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'dva';
-import ExtractRequests from "../components/ExtractRequests";
+import CreateExtractRequest from "../components/CreateExtractRequest";
 
-class ExtractRequestsPage extends React.Component{
+class CreateExtractRequestPage extends React.Component{
   componentDidMount(){
-    this.props.dispatch({type: 'extract_request/get_extract_requests'})
+    this.props.dispatch({type: 'extract_request/set_extract_requests', payload: {data: {}, status: 'success', message: 'Success'}})
   }
   render(){
     const {extract_requests_list} = this.props;
@@ -17,14 +17,14 @@ class ExtractRequestsPage extends React.Component{
     }
 
     return <div>
-      <ExtractRequests {...extract_requests_list.data}/>
+      <CreateExtractRequest {...extract_requests_list.data}/>
     </div>
   }
 }
 
-ExtractRequestsPage.propTypes = {
+CreateExtractRequestPage.propTypes = {
 };
 
 export default connect((state)=>({
   extract_requests_list: state.extract_request.list
-}))(ExtractRequestsPage);
+}))(CreateExtractRequestPage);

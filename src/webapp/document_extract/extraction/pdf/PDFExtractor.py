@@ -28,7 +28,7 @@ class PDFExtractor(BaseExtractor):
         try:
 
             # Output directory prefix
-            OUTPUT_DIR = ''
+            OUTPUT_DIR = 'temp/'
 
             # Extract the name pdf file from file_path
             pdf_file_name = os.path.basename(pdf_file_path)

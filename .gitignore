@@ -1,0 +1,7 @@
+.idea/
+build/
+data/train/
+venv/
+src/notebooks/*/
+src/webapp/document_extract/media/
+src/webapp/document_extract/temp/
