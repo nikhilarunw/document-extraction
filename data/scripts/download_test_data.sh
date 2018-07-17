@@ -50,8 +50,8 @@ do
 
 
     # Prod => Local File System
-    #aws s3 cp s3://smart-invoice-prod/request_history/"${test_requests[$ix]}" ../train/request_history/"${test_requests[$ix]}" --recursive --exclude="*" --include="*.zip"
-    #aws s3 cp s3://smart-invoice-prod/request_history/"${test_requests[$ix]}" ../train/request_history/"${test_requests[$ix]}" --recursive --exclude="*" --include="*.csv"
+    aws s3 cp s3://smart-invoice-prod/request_history/"${test_requests[$ix]}" ../train/request_history/"${test_requests[$ix]}" --recursive --exclude="*" --include="*.zip"
+    aws s3 cp s3://smart-invoice-prod/request_history/"${test_requests[$ix]}" ../train/request_history/"${test_requests[$ix]}" --recursive --exclude="*" --include="*.csv"
 
     unzip -o ../train/request_history/"${test_requests[$ix]}/zipfile/*.zip" -d ../train/request_history/"${test_requests[$ix]}/invoicefiles/"
     echo "processed-${ix}"

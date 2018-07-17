@@ -2,6 +2,7 @@
 build/
 data/train/
 venv/
-src/notebooks/*/
-src/webapp/document_extract/media/
-src/webapp/document_extract/temp/
+lib/notebooks/*/
+lib/document_extraction.egg-info/
+webapp/document_extract/media/
+webapp/document_extract/temp/
