@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'document_extract_app',
-    'corsheaders'
+    'corsheaders',
+    'graphene_django',
 ]
 
 
@@ -143,3 +144,6 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+GRAPHENE = {
+    'SCHEMA': 'document_extract_app.schema.schema' # Where your Graphene schema lives
+}

@@ -23,12 +23,13 @@ export default {
       }
     },
     *get_extract_requests({ payload }, { call, put }) {  // eslint-disable-line
-      const {data, err} = yield call(get_extract_requests, payload)
-      if(err){
+      const response = yield call(get_extract_requests, payload)
+      console.log(response)
+      /*if(err){
         yield put({ type: 'set_extract_requests', payload: {data: {count: 0, next: null, previous: null, results: []}, status: 'failed', message: err.message} });
       }else{
         yield put({ type: 'set_extract_requests', payload: {data: data, status: 'success', message: 'Success'} });
-      }
+      }*/
     },
   },
 

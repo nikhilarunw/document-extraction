@@ -1,12 +1,38 @@
 import request from '../utils/request';
-import {BASE_URL} from "./config";
+import gql from "graphql-tag";
+import {BASE_URL, gql_client} from "./config";
 
 export function get_extract_requests() {
-  return request(`${BASE_URL}/api/extract_requests/`);
+  return gql_client
+  .query({
+    query: gql`
+      {
+        allExtractRequests {
+          edges {
+            node {
+              id,
+              status,
+            }
+          }
+        }
+      }
+    `
+  })
 }
 
 export function get_extract_request({params}) {
-  return request(`${BASE_URL}/api/extract_requests/${params.id}`);
+  return gql_client
+    .query({
+      query: gql`
+        {
+          extractRequest(id: ${params.id}) {
+              id,
+              status,
+              documentSet
+          }
+        }
+      `
+    })
 }
 
 export function create_extract_request({data}) {
