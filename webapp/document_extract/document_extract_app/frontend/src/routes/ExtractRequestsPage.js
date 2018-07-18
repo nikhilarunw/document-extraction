@@ -1,30 +1,36 @@
 import React from 'react';
-import { connect } from 'dva';
+import {connect} from 'dva';
+import Query from "react-apollo/Query";
+import {gql} from "apollo-boost";
 import ExtractRequests from "../components/ExtractRequests";
 
-class ExtractRequestsPage extends React.Component{
-  componentDidMount(){
-    this.props.dispatch({type: 'extract_request/get_extract_requests'})
-  }
-  render(){
-    const {extract_requests_list} = this.props;
-    const { status, message } = extract_requests_list;
 
-    if(status==='loading'){
-      return <div>Loading...</div>
-    }else if(status==='failed'){
-      return <div>Failed! {message}</div>
-    }
+class ExtractRequestsPage extends React.Component {
+  render() {
+    return <Query
+      query={gql`
+      {
+        allExtractRequests {
+          edges {
+            node {
+              id,
+              status,
+            }
+          }
+        }
+      }
+    `}
+    >
+      {({loading, error, data}) => {
+        if (loading) return <p>Loading...</p>;
+        if (error) return <p>Error :(</p>;
 
-    return <div>
-      <ExtractRequests {...extract_requests_list.data}/>
-    </div>
+        return <ExtractRequests data={data.allExtractRequests}/>;
+      }}
+    </Query>
   }
 }
 
-ExtractRequestsPage.propTypes = {
-};
+ExtractRequestsPage.propTypes = {};
 
-export default connect((state)=>({
-  extract_requests_list: state.extract_request.list
-}))(ExtractRequestsPage);
+export default connect()(ExtractRequestsPage);

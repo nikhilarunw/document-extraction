@@ -4,8 +4,8 @@ import { Link } from 'dva/router';
 const ExtractRequests = (props) => {
   return (
     <div>
-      {props.results.map((result)=><div key={result.id}>
-        <Link to={`/extract-requests/${result.id}/train`}>{result.id}</Link>
+      {props.data.edges.map(({node})=><div key={node.id}>
+        <Link to={`/extract-requests/${node.id}/train`}>{node.id}</Link>
       </div>)}
     </div>
   );
