@@ -1,3 +1,4 @@
+const path = require('path')
 const merge = require('webpack-merge');
 
 const webpack_overrides = {
@@ -16,7 +17,7 @@ const webpack_overrides = {
               localIdentName: "[name]--[local]--[hash:base64:8]"
             }
           },
-          "postcss-loader" // has separate config, see postcss.config.js nearby
+          "postcss-loader"
         ]
       }
     ]
@@ -29,7 +30,8 @@ module.exports = function(webpack_config){
   const webpack_config_merged = merge.smartStrategy({
     'module.loaders': 'replace'
   })(webpack_config, webpack_overrides);
-  console.log(webpack_config_merged)
-  //return webpack_config_merged;
-  return webpack_config
+  console.log(JSON.stringify(webpack_config_merged))
+  print()
+  return webpack_config_merged;
+  //return webpack_config
 }
