@@ -16,7 +16,7 @@
     "postcss": "^7.0.0",
     "postcss-preset-env": "^5.2.2",
     "react": "^16.2.0",
-    "react-apollo": "^2.1.9",
+    "react-apollo": "^2.1.9 ",
     "react-dom": "^16.2.0",
     "react-toolbox": "^2.0.0-beta.13"
   },
@@ -32,6 +32,7 @@
     "postcss-loader": "^2.1.6",
     "redbox-react": "^1.4.3",
     "roadhog": "^2.0.0",
+    "webpack-chain": "^4.8.0",
     "webpack-merge": "^4.1.3"
   }
 }
