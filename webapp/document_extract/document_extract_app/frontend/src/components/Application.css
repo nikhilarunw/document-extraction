@@ -1,0 +1,14 @@
+.app{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+.app_header{
+  flex: fit-content;
+}
+.app_content{
+  flex: 8;
+}
+.app_footer{
+  flex: fit-content;
+}
