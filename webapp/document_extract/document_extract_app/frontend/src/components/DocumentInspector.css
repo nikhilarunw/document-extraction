@@ -1,0 +1,24 @@
+.document_inspector{
+
+}
+.add_to_labels_tooltip{
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  bottom: 144px;
+  width: 90vw;
+}
+.add_to_values_tooltip{
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  bottom: 80px;
+  width: 90vw;
+}
+.clear_selection_tooltip{
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  bottom: 16px;
+  width: 90vw;
+}

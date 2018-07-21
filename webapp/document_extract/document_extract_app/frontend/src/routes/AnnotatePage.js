@@ -11,16 +11,11 @@ class AnnotatePage extends React.Component {
     return <Query
       query={gql`
         {
-         extractRequest(id: "${params.extract_request_id}") {
+         document(id: "${params.document_id}") {
             id,
             status,
-            documentSet {
-              edges {
-                node {
-                  id
-                }
-              }
-            }
+            file,
+            ocrOutput
          }
        }
     `}

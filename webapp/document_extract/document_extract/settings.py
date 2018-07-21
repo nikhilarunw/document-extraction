@@ -143,6 +143,8 @@ REST_FRAMEWORK = {
 
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = ['localhost']
+CSRF_TRUSTED_ORIGINS = ['localhost']
 
 GRAPHENE = {
     'SCHEMA': 'document_extract_app.schema.schema' # Where your Graphene schema lives

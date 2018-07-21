@@ -37,7 +37,6 @@ export default class Application extends React.Component{
         </Switch>
       </div>
       <div className={ApplicationStyles.app_footer}>
-        Footer
       </div>
     </div>
   }

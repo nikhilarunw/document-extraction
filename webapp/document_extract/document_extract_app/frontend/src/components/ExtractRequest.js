@@ -11,7 +11,7 @@ const ExtractRequest = (props) => {
         <ListItem
           selectable
           caption='invoice.jpg'
-          rightIcon={<Button href={`/#/extract_requests/${props.data.id}/train/${node.id}`}>View</Button>}
+          rightIcon={<Button href={`/#/extract-requests/${props.data.id}/train/${node.id}`}>View</Button>}
         />
       </div>)}
       </List>
