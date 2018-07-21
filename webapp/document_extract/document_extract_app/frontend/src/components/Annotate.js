@@ -1,9 +1,9 @@
 import React from 'react';
 import { List, ListItem, ListSubHeader, ListDivider, ListCheckbox } from 'react-toolbox/lib/list';
-import TrainingStyles from "./Training.css";
-const Training = (props) => {
+import AnnotateStyles from "./Annotate.css";
+const Annotate = (props) => {
   return (
-    <div className={TrainingStyles.training}>
+    <div className={AnnotateStyles.annotate}>
       <List selectable ripple>
         <ListSubHeader caption='All Files'/>
         {props.data.documentSet.edges.map(({node})=><div key={node.id}>
@@ -18,7 +18,7 @@ const Training = (props) => {
   );
 };
 
-Training.propTypes = {
+Annotate.propTypes = {
 };
 
-export default Training;
+export default Annotate;

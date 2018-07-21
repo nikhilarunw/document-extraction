@@ -1,11 +1,27 @@
 import React from 'react';
 import { Link } from 'dva/router';
-
+import {Card, CardMedia, CardText, CardTitle, CardActions} from "react-toolbox/lib/card";
+import {Button} from "react-toolbox/lib/button";
+import ExtractRequestsStyles from "./ExtractRequests.css";
 const ExtractRequests = (props) => {
   return (
-    <div>
+    <div className={ExtractRequestsStyles.extract_requests}>
       {props.data.edges.map(({node})=><div key={node.id}>
-        <Link to={`/extract-requests/${node.id}/train`}>{node.id}</Link>
+        <Card>
+          <CardTitle
+            avatar="https://image.flaticon.com/icons/svg/149/149346.svg"
+            title="Documents"
+            subtitle={node.status}
+          />
+          <CardActions>
+            <Button primary href={`#/extract-requests/${node.id}/`}>
+              View
+            </Button>
+            <Button href={`#/extract-requests/${node.id}/train`}>
+              Train
+            </Button>
+          </CardActions>
+        </Card>
       </div>)}
     </div>
   );

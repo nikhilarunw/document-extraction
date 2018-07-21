@@ -10,19 +10,19 @@ class ExtractRequestPage extends React.Component {
     const { match: { params }} = this.props;
     return <Query
       query={gql`
-       {
-         extractRequest(id: "${params.extract_request_id}") {
-            id,
-            status,
-            documentSet {
-              edges {
-                node {
-                  id
-                }
+     {
+       extractRequest(id: "${params.extract_request_id}") {
+          id,
+          status,
+          documentSet {
+            edges {
+              node {
+                id
               }
             }
-         }
+          }
        }
+     }
     `}
     >
       {({loading, error, data}) => {
