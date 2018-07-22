@@ -8,33 +8,23 @@ import {get_json} from "../services/utils";
 import DocumentInspector from "./DocumentInspector";
 export class Annotate extends React.Component{
 
-  state = {
-    ocrOutputContent: {
-      data: [],
-      message: 'Loading...',
-      loading: true,
+  handleOnUpdateLabelValues = (data)=>{
+    if(this.props.updateAnnotatedJson){
+      this.props.updateAnnotatedJson(data);
     }
-  }
-
-  componentDidMount(){
-    const { props } = this;
-    get_json({
-      params:{
-        url: `${BASE_URL}/media/${props.data.ocrOutput}`
-      }
-    }).then((data)=>{
-      this.setState({
-        ocrOutputContent: data
-      })
-    },(err)=>{
-      this.setState({
-        ocrOutputContent: err
-      })
-    })
   }
   render(){
     const { props } = this;
-    const { ocrOutputContent }  = this.state;
+
+    const ocrJsonObj = JSON.parse(props.data.ocrJson);
+    const annotatedJsonObj = JSON.parse(props.data.annotatedJson);
+
+    const data = {
+      ...props.data,
+      ocrJson: ocrJsonObj,
+      annotatedJson: annotatedJsonObj,
+    }
+
     return (
       <div className={AnnotateStyles.annotate}>
         <Card>
@@ -48,7 +38,9 @@ export class Annotate extends React.Component{
             <Button target="_blank" href={`${BASE_URL}/media/${props.data.ocrOutput}`}>View OCR</Button>
           </CardActions>
         </Card>
-        <DocumentInspector data={ocrOutputContent.data}/>
+
+
+        <DocumentInspector data={data} onUpdateLabelValues={this.handleOnUpdateLabelValues}/>
       </div>
     );
   }

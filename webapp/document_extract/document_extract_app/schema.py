@@ -1,3 +1,6 @@
+import json
+from graphql_relay.node.node import from_global_id
+
 import graphene
 
 from document_extract_app.models import ExtractRequest, Document
@@ -15,6 +18,28 @@ class DocumentNode(DjangoObjectType):
         model = Document
         interfaces = (Node, )
 
+
+class DocumentInput(graphene.InputObjectType):
+    id = graphene.ID(required=True)
+    annotated_json = graphene.JSONString(required=True)
+
+class UpdateDocument(graphene.Mutation):
+    class Arguments:
+        document_data = DocumentInput(required=True)
+
+    document = Node.Field(DocumentNode)
+
+    @staticmethod
+    def mutate(root, info, document_data=None):
+        record_id = from_global_id(document_data.id)
+
+        document = Document.objects.get(id=record_id[1])
+        document.annotated_json=document_data.annotated_json
+        document.save()
+
+        return UpdateDocument(document=document)
+
+
 class Query(ObjectType):
     extract_request = Node.Field(ExtractRequestNode)
     all_extract_requests = DjangoConnectionField(ExtractRequestNode)
@@ -22,4 +47,7 @@ class Query(ObjectType):
     document = Node.Field(DocumentNode)
     all_documents = DjangoConnectionField(DocumentNode)
 
-schema = Schema(query=Query)
+class Mutations(graphene.ObjectType):
+    update_document = UpdateDocument.Field()
+
+schema = Schema(query=Query, mutation=Mutations)

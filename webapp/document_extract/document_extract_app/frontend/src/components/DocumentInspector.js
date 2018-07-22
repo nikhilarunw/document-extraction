@@ -11,19 +11,23 @@ export class DocumentInspector extends React.Component {
   state = {
     tabIndex: 0,
     selected_texts: {},
-    selected_labels: {},
-    selected_values: {}
   };
+
+  onUpdateLabelValues = ({texts_labels, texts_values})=>{
+    if(this.props.onUpdateLabelValues){
+      this.props.onUpdateLabelValues({texts_labels, texts_values})
+    }
+  }
 
   handleFixedTabChange = (index) => {
     this.setState({tabIndex: index});
   };
   handleOnClickText = (selected, index)=>{
-    const {data} = this.props;
+    const {data:{ocrJson:{texts}}} = this.props;
     const {selected_texts} = this.state;
 
     if(selected){
-      selected_texts[index] = data[index]
+      selected_texts[index] = texts[index]
     }else{
       delete selected_texts[index]
     }
@@ -31,40 +35,37 @@ export class DocumentInspector extends React.Component {
   };
 
   handleOnClickValue = (selected, index)=>{
-    const {data} = this.props;
-    const {selected_values} = this.state;
-
+    const {data:{ocrJson:{texts}, annotatedJson: {texts_values={}, texts_labels={}}}} = this.props;
     if(selected){
-      selected_values[index] = data[index]
+      texts_values[index] = texts[index]
     }else{
-      delete selected_values[index]
+      delete texts_values[index]
     }
-    this.setState({selected_values});
+    this.onUpdateLabelValues({texts_values, texts_labels});
   };
 
   handleOnClickLabel = (selected, index)=>{
-    const {data} = this.props;
-    const {selected_labels} = this.state;
-
+    const {data:{ocrJson:{texts}, annotatedJson: {texts_values={}, texts_labels={}}}} = this.props;
     if(selected){
-      selected_labels[index] = data[index]
+      texts_labels[index] = texts[index]
     }else{
-      delete selected_labels[index]
+      delete texts_labels[index]
     }
-    this.setState({selected_labels});
+    this.onUpdateLabelValues({texts_values, texts_labels});
   };
 
   handleOnClickAddToLabel = ()=>{
-    let {selected_texts, selected_labels} = this.state;
-    Object.assign(selected_labels, selected_texts)
-    this.setState({selected_labels,selected_texts});
-
+    const {selected_texts} = this.state;
+    const {data:{ocrJson:{texts}, annotatedJson: {texts_values={}, texts_labels={}}}} = this.props;
+    Object.assign(texts_labels, selected_texts);
+    this.onUpdateLabelValues({texts_values, texts_labels});
   }
 
   handleOnClickAddToValue = ()=>{
-    let {selected_texts, selected_values} = this.state;
-    Object.assign(selected_values, selected_texts)
-    this.setState({selected_values, selected_texts});
+    const {selected_texts} = this.state;
+    const {data:{ocrJson:{texts}, annotatedJson: {texts_values={}, texts_labels={}}}} = this.props;
+    Object.assign(texts_values, selected_texts);
+    this.onUpdateLabelValues({texts_values, texts_labels});
   }
 
   handleOnClickClearSelection = ()=>{
@@ -73,20 +74,23 @@ export class DocumentInspector extends React.Component {
   }
 
    handleOnClickRemoveLabels = ()=>{
-    const selected_labels = {}
-    this.setState({selected_labels});
+    const {data:{ocrJson:{texts}, annotatedJson: {texts_values={}}}} = this.props;
+    this.onUpdateLabelValues({texts_values, texts_labels: {}});
   }
 
    handleOnClickRemoveValues = ()=>{
-    const selected_values = {}
-    this.setState({selected_values});
+    const {data:{ocrJson:{texts}, annotatedJson: {texts_labels={}}}} = this.props;
+    this.onUpdateLabelValues({texts_values: {}, texts_labels});
   }
 
 
   render() {
-    const {props} = this;
-    const {selected_texts, selected_labels, selected_values} = this.state;
-    console.log('Props', props)
+    const {selected_texts} = this.state;
+    const { data: { ocrJson, annotatedJson}} = this.props;
+
+    const {texts=[]} = ocrJson;
+    const {texts_labels={}, texts_values={}} = annotatedJson;
+
     return (
       <div className={DocumentInspectorStyles.document_inspector}>
         <Card>
@@ -98,7 +102,7 @@ export class DocumentInspector extends React.Component {
             <Tab label='All'>
               <List selectable ripple>
                 <ListSubHeader caption='Texts'/>
-                {props.data.map((text, index) => <div key={index}>
+                {texts.map((text, index) => <div key={index}>
                   <ListCheckbox
                     checked={!!selected_texts[index]}
                     onChange={(selected)=>this.handleOnClickText(selected, index)}
@@ -120,7 +124,7 @@ export class DocumentInspector extends React.Component {
             <Tab label='Labels'>
               <List selectable ripple>
                 <ListSubHeader caption='Texts'/>
-                {Object.entries(selected_labels).map(([index, text]) => <div key={index}>
+                {Object.entries(texts_labels).map(([index, text]) => <div key={index}>
                   <ListItem
                     selectable
                     caption={text[0]}
@@ -132,7 +136,7 @@ export class DocumentInspector extends React.Component {
             <Tab label='Values'>
               <List selectable ripple>
                 <ListSubHeader caption='Texts'/>
-                {Object.entries(selected_values).map(([index, text]) => <div key={index}>
+                {Object.entries(texts_values).map(([index, text]) => <div key={index}>
                   <ListItem
                     selectable
                     caption={text[0]}

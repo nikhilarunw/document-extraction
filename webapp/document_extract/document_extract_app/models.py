@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 class ExtractRequest(models.Model):
     """
@@ -32,6 +33,12 @@ class Document(models.Model):
 
     # This field specifies reference to ocr representation of Document
     ocr_output = models.FileField(verbose_name="OCR Output", name="ocr_output", default=None, blank=True)
+
+    # This field stores ocr data referenced by ocr_output file in as JSON Format (redundant for ease of use in app)
+    ocr_json = JSONField(verbose_name="OCR JSON", name="ocr_json", default={}, blank=False)
+
+    # This field stores annotated data for current document
+    annotated_json = JSONField(verbose_name="Annotated JSON", name="annotated_json", default={}, blank=False)
 
 
     # Status of Document
