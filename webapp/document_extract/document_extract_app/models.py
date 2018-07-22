@@ -52,3 +52,10 @@ class Document(models.Model):
 
     status = models.CharField(max_length=32, default=STATUS_CREATED, choices=STATUS_CHOICES)
 
+class ExtractionModel(models.Model):
+    """
+    This model represents the extraction logic which will used to extract information for related documents
+    """
+    config_json = JSONField(verbose_name="Config JSON", name="config_json", default={}, blank=False)
+
+    tags = JSONField(verbose_name="Tags", name="tags", default=[], blank=False)

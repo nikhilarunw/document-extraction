@@ -7,6 +7,7 @@
   flex: fit-content;
 }
 .app_content{
+  margin-top: 64px;
   flex: 8;
 }
 .app_footer{

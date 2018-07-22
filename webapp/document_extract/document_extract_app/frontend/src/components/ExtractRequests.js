@@ -6,6 +6,7 @@ import ExtractRequestsStyles from "./ExtractRequests.css";
 const ExtractRequests = (props) => {
   return (
     <div className={ExtractRequestsStyles.extract_requests}>
+      <h2>Extraction Requests</h2>
       {props.data.edges.map(({node})=><div key={node.id}>
         <Card>
           <CardTitle
@@ -16,9 +17,6 @@ const ExtractRequests = (props) => {
           <CardActions>
             <Button primary href={`#/extract-requests/${node.id}/`}>
               View
-            </Button>
-            <Button href={`#/extract-requests/${node.id}/train`}>
-              Train
             </Button>
           </CardActions>
         </Card>
