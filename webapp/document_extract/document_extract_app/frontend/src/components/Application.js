@@ -13,6 +13,7 @@ import ApplicationStyles from "./Application.css";
 import AnnotatePage from "../routes/AnnotatePage";
 import ExtractionModelsPage from "../routes/ExtractionModelsPage";
 import CreateExtractionModelPage from "../routes/CreateExtractionModelPage";
+import EditExtractionModelPage from "../routes/EditExtractionModelPage";
 
 const GithubIcon = () => (
   <svg viewBox="0 0 284 277">
@@ -42,7 +43,7 @@ export default class Application extends React.Component{
 
           <Route path="/extraction-models/create" exact component={CreateExtractionModelPage} />
           <Route path="/extraction-models" exact component={ExtractionModelsPage} />
-          <Route path="/extraction-models/:extraction_model_id/" exact component={CreateExtractionModelPage} />
+          <Route path="/extraction-models/:extraction_model_id/" exact component={EditExtractionModelPage} />
 
         </Switch>
       </div>

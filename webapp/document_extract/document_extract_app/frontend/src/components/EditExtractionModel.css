@@ -1,0 +1,16 @@
+.edit_extraction_model {
+  margin: 16px;
+}
+
+.sample_files_select {
+  display: flex;
+  align-items: center;
+}
+
+.sample_files_select_autocomplete {
+  flex: 8;
+}
+
+.sample_files_select_load_button {
+  flex: 2;
+}

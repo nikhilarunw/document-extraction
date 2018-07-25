@@ -1,13 +1,14 @@
+import json
+import os
 from glob import glob
 
-import os
 import pandas as pd
 from django.core.files.base import ContentFile
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
-from document_extract_app.models import Document, ExtractRequest
+from document_extract_app.models import Document, ExtractRequest, ExtractionModel
 from extraction.pdf.PDFExtractor import PDFExtractor
-import json
+
 
 class Command(BaseCommand):
     help = 'Seeds database for document_extract_app'
@@ -21,6 +22,7 @@ class Command(BaseCommand):
     def clear_data(self):
         Document.objects.all().delete()
         ExtractRequest.objects.all().delete()
+        ExtractionModel.objects.all().delete()
 
     def populate_data(self):
 
@@ -34,9 +36,7 @@ class Command(BaseCommand):
             self.create_extract_request(invoice_files_glob_path)
             completed = completed + 1
 
-            print('Created {}/{}'.format(completed,total))
-
-
+            print('Created {}/{}'.format(completed, total))
 
     def create_extract_request(self, invoice_files_glob_path):
 
@@ -86,6 +86,3 @@ class Command(BaseCommand):
             document.save()
 
         print("Created extract request for {}".format(invoice_files_glob_path))
-
-
-

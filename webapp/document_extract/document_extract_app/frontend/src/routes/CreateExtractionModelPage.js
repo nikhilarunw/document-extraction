@@ -1,31 +1,15 @@
 import React from 'react';
 import {connect} from 'dva';
-import gql from 'graphql-tag';
-import Mutation from "react-apollo/Mutation";
+import {routerRedux} from 'dva/router';
 import CreateExtractionModel from "../components/CreateExtractionModel";
 
-const CREATE_EXTRACTION_MODEL = gql`
-  mutation createExtractionModel($tags: JSONString!, $configJson: JSONString!){
-    createExtractionModel(extractionModelData:{tags: $tags, configJson: $configJson}){
-      extractionModel{
-        id,
-        tags,
-        configJson
-      }
-    }
-  }`;
-
-
 class CreateExtractionModelPage extends React.Component {
+  handleOnCreateExtractionModel = (extractionModel) => {
+    this.props.dispatch(routerRedux.push(`/extraction-models/${extractionModel.id}`))
+  }
+
   render() {
-    return <Mutation mutation={CREATE_EXTRACTION_MODEL}>
-      {createExtractionModel =>
-        <CreateExtractionModel onCreateExtractionModel={(data)=>{
-            return createExtractionModel({ variables: { extractionModelData: data } })
-          }}
-        />
-      }
-    </Mutation>
+    return <CreateExtractionModel onCreateExtractionModel={this.handleOnCreateExtractionModel}/>
   }
 }
 

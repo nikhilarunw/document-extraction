@@ -58,4 +58,19 @@ class ExtractionModel(models.Model):
     """
     config_json = JSONField(verbose_name="Config JSON", name="config_json", default={}, blank=False)
 
+    # list of tags to attach to model
     tags = JSONField(verbose_name="Tags", name="tags", default=[], blank=False)
+
+    # This field represent the type of model
+    # Each model can have different processing logic and config_json format
+    MODEL_TYPE_SEARCH_AND_LAYOUT = 'SEARCH_AND_LAYOUT'
+    MODEL_TYPE_ZONAL = 'ZONAL'
+
+    MODEL_TYPE_CHOICES = [('Search And Layout', MODEL_TYPE_SEARCH_AND_LAYOUT),
+                          ('Zonal', MODEL_TYPE_ZONAL)]
+
+    model_type = models.CharField(verbose_name="Model Type", name="model_type",
+                                  max_length=100,
+                                  default=None,
+                                  blank=True,
+                                  choices=MODEL_TYPE_CHOICES)

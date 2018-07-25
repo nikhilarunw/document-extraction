@@ -16,8 +16,8 @@ export class Annotate extends React.Component{
   render(){
     const { props } = this;
 
-    const ocrJsonObj = JSON.parse(props.data.ocrJson);
-    const annotatedJsonObj = JSON.parse(props.data.annotatedJson);
+    const ocrJsonObj = props.data.ocrJson;
+    const annotatedJsonObj = props.data.annotatedJson;
 
     const data = {
       ...props.data,

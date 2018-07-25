@@ -83,9 +83,9 @@ WSGI_APPLICATION = 'document_extract.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'NAME': 'document_extraction_db',
+        'USER': 'document_extraction_user',
+        'PASSWORD': 'kredxtest',
         'HOST': 'localhost',
         'PORT': '5432',
     }
