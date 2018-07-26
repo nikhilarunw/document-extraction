@@ -85,7 +85,8 @@ const ALL_DOCUMENTS = gql`
 export class EditExtractionModel extends React.Component {
   state = {
     page_name: 0,
-    selected_document_id: []
+    selected_document_id: [],
+    extracted_json: [],
   }
 
   handleTabChange = (page_name) => {
@@ -254,14 +255,15 @@ export class EditExtractionModel extends React.Component {
                                   documentId: this.state.selected_document_id[0],
                                   extractionModelId: this.props.extraction_model_id
                                 }
-                              }).then(({data: {document}}) => {
-                                console.log('Extracted Document', document)
+                              }).then(({data: {extractDocumentData: {document}}}) => {
+                                const extracted_json = JSON.parse(document.extractedJson || "{}")
+                                this.setState({extracted_json})
                               })
                             }}
                             className={EditExtractionModelStyles.sample_files_select_load_button}/>
                   </div>
                   <div>
-                    <ReactJson src={{'texts': "Hello"}}/>
+                    <ReactJson src={this.state.extracted_json}/>
                   </div>
                 </div>;
               }}
