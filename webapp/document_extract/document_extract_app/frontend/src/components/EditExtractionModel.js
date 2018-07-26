@@ -7,6 +7,8 @@ import {Button} from "react-toolbox/lib/button/index";
 import {gql_client} from "../services/config"
 import DocumentInspector from "./DocumentInspector";
 import Query from "react-apollo/Query";
+import {Tab, Tabs} from "react-toolbox/lib/tabs/index";
+import ReactJson from 'react-json-view'
 
 const GET_EXTRACTION_MODEL = gql`
   query getExtractionModel($id: ID!) {
@@ -28,6 +30,16 @@ const UPDATE_EXTRACTION_MODEL = gql`
     }
   }`;
 
+const EXTRACT_DOCUMENT_DATA = gql`
+  mutation extractDocumentData($documentId: ID!, $extractionModelId: ID!) {
+    extractDocumentData(extractionData: {documentId: $documentId, extractionModelId: $extractionModelId}) {
+      document(id: $documentId){
+        id,
+        extractedJson,
+      }
+    }
+  }`;
+
 const GET_DOCUMENT = gql`
   query get_document($id: ID!) {
     document(id: $id) {
@@ -37,6 +49,7 @@ const GET_DOCUMENT = gql`
       ocrOutput,
       ocrJson,
       annotatedJson,
+      extractedJson
       extractRequest{
         id
       }
@@ -71,9 +84,13 @@ const ALL_DOCUMENTS = gql`
 
 export class EditExtractionModel extends React.Component {
   state = {
+    page_name: 0,
     selected_document_id: []
   }
 
+  handleTabChange = (page_name) => {
+    this.setState({page_name})
+  }
   handleOnChangeSampleDocument = (selected_document_id) => {
     this.setState({selected_document_id: [selected_document_id]})
   }
@@ -90,24 +107,26 @@ export class EditExtractionModel extends React.Component {
   render() {
     return (
       <div className={EditExtractionModelStyles.edit_extraction_model}>
-        <Mutation mutation={UPDATE_EXTRACTION_MODEL}
-                  update={(store, {data: {updateExtractionModel: {extractionModel}}}) => {
-                    const data = store.readQuery({
-                      query: GET_EXTRACTION_MODEL,
-                      variables: {id: this.props.extraction_model_id}
-                    });
+        <Tabs index={this.state.page_name} onChange={this.handleTabChange}>
+          <Tab label='Train'>
+            <Mutation mutation={UPDATE_EXTRACTION_MODEL}
+                      update={(store, {data: {updateExtractionModel: {extractionModel}}}) => {
+                        const data = store.readQuery({
+                          query: GET_EXTRACTION_MODEL,
+                          variables: {id: this.props.extraction_model_id}
+                        });
 
-                    data.extractionModel = extractionModel;
+                        data.extractionModel = extractionModel;
 
-                    store.writeQuery({
-                      query: GET_EXTRACTION_MODEL,
-                      data,
-                      variables: {id: this.props.extraction_model_id}
-                    },)
-                  }}>
-          {updateExtractionModel =>
-            <div>
-              <Query query={gql`{
+                        store.writeQuery({
+                          query: GET_EXTRACTION_MODEL,
+                          data,
+                          variables: {id: this.props.extraction_model_id}
+                        },)
+                      }}>
+              {updateExtractionModel =>
+                <div>
+                  <Query query={gql`{
                         allDocuments {
                           edges {
                             node {
@@ -118,11 +137,99 @@ export class EditExtractionModel extends React.Component {
                         }
                       }
                     `}>
-                {({loading, error, data}) => {
-                  if (loading) return <p>Loading...</p>;
-                  if (error) return <p>Error :(</p>;
+                    {({loading, error, data}) => {
+                      if (loading) return <p>Loading...</p>;
+                      if (error) return <p>Error :(</p>;
 
-                  return <div className={EditExtractionModelStyles.sample_files_select}>
+                      return <div className={EditExtractionModelStyles.sample_files_select}>
+                        <Autocomplete
+                          className={EditExtractionModelStyles.sample_files_select_autocomplete}
+                          direction="down"
+                          selectedPosition="above"
+                          label="Choose sample document"
+                          hint="You can only choose one..."
+                          multiple={false}
+                          value={this.state.selected_document_id}
+                          suggestionMatch="anywhere"
+                          onChange={this.handleOnChangeSampleDocument}
+                          source={data.allDocuments.edges.reduce((acc, {node}) => {
+                            acc[node.id] = node.file;
+                            return acc
+                          }, {})}
+                        />
+                        <Button label={"Load Sample"}
+                                primary
+                                onClick={() => {
+                                  gql_client.query({
+                                    query: GET_DOCUMENT,
+                                    variables: {id: this.state.selected_document_id[0]}
+                                  }).then(({data: {document}}) => {
+                                    updateExtractionModel({
+                                      variables: {
+                                        id: this.props.extraction_model_id,
+                                        configJson: JSON.stringify({
+                                          ocrJson: document.ocrJson,
+                                          annotatedJson: document.annotatedJson,
+                                        })
+                                      }
+                                    })
+                                  })
+                                }}
+                                className={EditExtractionModelStyles.sample_files_select_load_button}/>
+                      </div>;
+                    }}
+                  </Query>
+                  <Query query={GET_EXTRACTION_MODEL}
+                         variables={{id: this.props.extraction_model_id}}>
+                    {({loading, error, data}) => {
+                      if (loading) return <p>Loading...</p>;
+                      if (error) return <p>Error :(</p>;
+
+                      const configJson = JSON.parse(data.extractionModel.configJson);
+
+                      const documentInspectorData = {
+                        ocrJson: JSON.parse(configJson.ocrJson || "[]"),
+                        annotatedJson: JSON.parse(configJson.annotatedJson || "{}")
+                      }
+
+                      return <div>
+                        <DocumentInspector data={documentInspectorData}
+                                           onUpdateLabelValues={(data) => {
+                                             updateExtractionModel({
+                                               variables: {
+                                                 id: this.props.extraction_model_id,
+                                                 configJson: JSON.stringify({
+                                                   ocrJson: configJson.ocrJson || "[]",
+                                                   annotatedJson: JSON.stringify({...data}),
+                                                 })
+                                               }
+                                             })
+                                           }}/>
+                      </div>;
+                    }}
+                  </Query>
+                </div>
+              }
+            </Mutation>
+          </Tab>
+          <Tab label='Test'>
+            <Query query={gql`{
+                        allDocuments {
+                          edges {
+                            node {
+                              id,
+                              file,
+                            }
+                          }
+                        }
+                      }
+                    `}>
+              {({loading, error, data}) => {
+                if (loading) return <p>Loading...</p>;
+                if (error) return <p>Error :(</p>;
+
+                return <div>
+                  <div className={EditExtractionModelStyles.sample_files_select}>
                     <Autocomplete
                       className={EditExtractionModelStyles.sample_files_select_autocomplete}
                       direction="down"
@@ -138,62 +245,30 @@ export class EditExtractionModel extends React.Component {
                         return acc
                       }, {})}
                     />
-                    <Button label={"Load Sample"}
+                    <Button label={"Extract"}
                             primary
                             onClick={() => {
-                              gql_client.query({
-                                query: GET_DOCUMENT,
-                                variables: {id: this.state.selected_document_id[0]}
+                              gql_client.mutate({
+                                mutation: EXTRACT_DOCUMENT_DATA,
+                                variables: {
+                                  documentId: this.state.selected_document_id[0],
+                                  extractionModelId: this.props.extraction_model_id
+                                }
                               }).then(({data: {document}}) => {
-                                updateExtractionModel({
-                                  variables: {
-                                    id: this.props.extraction_model_id,
-                                    configJson: JSON.stringify({
-                                      ocrJson: document.ocrJson,
-                                      annotatedJson: document.annotatedJson,
-                                    })
-                                  }
-                                })
+                                console.log('Extracted Document', document)
                               })
                             }}
                             className={EditExtractionModelStyles.sample_files_select_load_button}/>
-                  </div>;
-                }}
-              </Query>
-              <Query query={GET_EXTRACTION_MODEL}
-                     variables={{id: this.props.extraction_model_id}}>
-                {({loading, error, data}) => {
-                  if (loading) return <p>Loading...</p>;
-                  if (error) return <p>Error :(</p>;
+                  </div>
+                  <div>
+                    <ReactJson src={{'texts': "Hello"}}/>
+                  </div>
+                </div>;
+              }}
+            </Query>
+          </Tab>
+        </Tabs>
 
-                  const configJson = JSON.parse(data.extractionModel.configJson);
-
-                  console.log('configJson ', configJson)
-
-                  const documentInspectorData = {
-                    ocrJson: JSON.parse(configJson.ocrJson || "[]"),
-                    annotatedJson: JSON.parse(configJson.annotatedJson || "{}")
-                  }
-
-                  return <div>
-                    <DocumentInspector data={documentInspectorData}
-                                       onUpdateLabelValues={(data) => {
-                                         updateExtractionModel({
-                                           variables: {
-                                             id: this.props.extraction_model_id,
-                                             configJson: JSON.stringify({
-                                               ocrJson: configJson.ocrJson || "[]",
-                                               annotatedJson: JSON.stringify({...data}),
-                                             })
-                                           }
-                                         })
-                                       }}/>
-                  </div>;
-                }}
-              </Query>
-            </div>
-          }
-        </Mutation>
       </div>
     );
   }

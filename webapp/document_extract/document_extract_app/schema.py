@@ -4,6 +4,7 @@ from graphene_django.fields import DjangoConnectionField
 from graphene_django.types import DjangoObjectType
 from graphql_relay.node.node import from_global_id, to_global_id
 
+from document_extract_app.frontend.services import extract_document_data
 from document_extract_app.models import ExtractRequest, Document, ExtractionModel
 
 """
@@ -47,6 +48,32 @@ class UpdateDocument(graphene.Mutation):
 
         document = Document.objects.get(id=record_global_id[1])
         document.annotated_json = document_data.annotated_json
+        document.save()
+
+        return UpdateDocument(document=document)
+
+
+class ExtractionDataInput(graphene.InputObjectType):
+    document_id = graphene.ID(required=True)
+    extraction_model_id = graphene.ID(required=True)
+
+
+class ExtractDocumentData(graphene.Mutation):
+    class Arguments:
+        extraction_data = ExtractionDataInput(required=True)
+
+    document = Node.Field(DocumentNode)
+
+    @staticmethod
+    def mutate(root, info, extraction_data=None):
+        document_global_id = from_global_id(extraction_data.document_id)
+        extraction_model_global_id = from_global_id(extraction_data.extraction_model_id)
+
+        document = Document.objects.get(id=document_global_id[1])
+        extraction_model = ExtractionModel.objects.get(id=extraction_model_global_id[1])
+
+        document.extracted_json = extract_document_data(document.id, extraction_model.id)
+
         document.save()
 
         return UpdateDocument(document=document)
@@ -138,6 +165,7 @@ class Mutations(graphene.ObjectType):
     update_document = UpdateDocument.Field()
     create_extraction_model = CreateExtractionModel.Field()
     update_extraction_model = UpdateExtractionModel.Field()
+    extract_document_data = ExtractDocumentData.Field()
 
 
 schema = Schema(query=Query, mutation=Mutations)

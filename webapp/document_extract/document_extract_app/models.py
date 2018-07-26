@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.postgres.fields import JSONField
+from django.db import models
+
 
 class ExtractRequest(models.Model):
     """
@@ -19,6 +20,7 @@ class ExtractRequest(models.Model):
 
     status = models.CharField(max_length=32, default=STATUS_CREATED, choices=STATUS_CHOICES)
 
+
 class Document(models.Model):
     """
     This model represent the document which would be a physical flat file.
@@ -29,7 +31,8 @@ class Document(models.Model):
     file = models.FileField(verbose_name="File", name="file", default=None, blank=True)
 
     # This field specifies reference to extract request (parent) to which this Document belongs
-    extract_request = models.ForeignKey(ExtractRequest, verbose_name="ExtractRequest", name="extract_request", on_delete="CASCADE", default=None, blank=True)
+    extract_request = models.ForeignKey(ExtractRequest, verbose_name="ExtractRequest", name="extract_request",
+                                        on_delete="CASCADE", default=None, blank=True)
 
     # This field specifies reference to ocr representation of Document
     ocr_output = models.FileField(verbose_name="OCR Output", name="ocr_output", default=None, blank=True)
@@ -40,6 +43,8 @@ class Document(models.Model):
     # This field stores annotated data for current document
     annotated_json = JSONField(verbose_name="Annotated JSON", name="annotated_json", default={}, blank=False)
 
+    # This field stores extracted data for current document
+    extracted_json = JSONField(verbose_name="Extracted JSON", name="extracted_json", default={}, blank=False)
 
     # Status of Document
     STATUS_CREATED = 'CREATED'
@@ -51,6 +56,7 @@ class Document(models.Model):
     ]
 
     status = models.CharField(max_length=32, default=STATUS_CREATED, choices=STATUS_CHOICES)
+
 
 class ExtractionModel(models.Model):
     """

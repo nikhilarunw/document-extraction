@@ -1,23 +1,23 @@
 import React from 'react';
-import { List, ListItem, ListSubHeader, ListDivider, ListCheckbox } from 'react-toolbox/lib/list';
 import AnnotateStyles from "./Annotate.css";
 import {Card, CardActions, CardTitle} from "react-toolbox/lib/card/index";
 import {Button} from "react-toolbox/lib/button/index";
 import {BASE_URL} from "../services/config";
-import {get_json} from "../services/utils";
 import DocumentInspector from "./DocumentInspector";
-export class Annotate extends React.Component{
 
-  handleOnUpdateLabelValues = (data)=>{
-    if(this.props.updateAnnotatedJson){
+export class Annotate extends React.Component {
+
+  handleOnUpdateLabelValues = (data) => {
+    if (this.props.updateAnnotatedJson) {
       this.props.updateAnnotatedJson(data);
     }
   }
-  render(){
-    const { props } = this;
 
-    const ocrJsonObj = props.data.ocrJson;
-    const annotatedJsonObj = props.data.annotatedJson;
+  render() {
+    const {props} = this;
+
+    const ocrJsonObj = JSON.parse(props.data.ocrJson);
+    const annotatedJsonObj = JSON.parse(props.data.annotatedJson);
 
     const data = {
       ...props.data,
@@ -46,7 +46,6 @@ export class Annotate extends React.Component{
   }
 }
 
-Annotate.propTypes = {
-};
+Annotate.propTypes = {};
 
 export default Annotate;
