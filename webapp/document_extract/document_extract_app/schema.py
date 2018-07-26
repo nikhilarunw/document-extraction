@@ -4,8 +4,8 @@ from graphene_django.fields import DjangoConnectionField
 from graphene_django.types import DjangoObjectType
 from graphql_relay.node.node import from_global_id, to_global_id
 
-from document_extract_app.frontend.services import extract_document_data
 from document_extract_app.models import ExtractRequest, Document, ExtractionModel
+from document_extract_app.services import extract_document_data
 
 """
 Extraction Request Schema
