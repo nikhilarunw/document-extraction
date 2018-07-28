@@ -1,0 +1,25 @@
+.selection {
+  stroke: black;
+  stroke-width: 1px;
+  stroke-dasharray: 4px;
+  stroke-opacity: 0.9;
+  fill: gray;
+  fill-opacity: 0.2;
+}
+
+.state {
+  stroke: gray;
+  fill: white;
+}
+
+svg text {
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+svg text::selection {
+  background: none;
+}
