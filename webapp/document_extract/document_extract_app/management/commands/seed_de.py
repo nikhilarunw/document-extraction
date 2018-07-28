@@ -62,11 +62,12 @@ class Command(BaseCommand):
             # Save extracted ocr reference
             pdf_extractor = PDFExtractor(document_file_path)
             text_boxes = pdf_extractor.extract_data()
+
             text_boxes_df = pd.DataFrame(text_boxes)
 
             ocr_json_file_name = str(pdf_file_name) + '.json'
 
-            text_boxes_df.to_json('temp/' + ocr_json_file_name, orient='values')
+            text_boxes_df.to_json('temp/' + ocr_json_file_name, orient='records')
 
             ocr_file = open('temp/' + ocr_json_file_name, "rb")
 

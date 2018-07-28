@@ -37,13 +37,13 @@ def extract_with_search_and_layout_model(document, extraction_model):
     label_results = {}
 
     for text in texts:
-        search_text = text[0]
+        search_text = text.get('text')
         values = labels_search_map.get(search_text, [])
         values.append(text)
         labels_search_map[search_text] = values
 
     for key, text in texts_labels.items():
-        search_text = text[0]
+        search_text = text.get('text')
         results = labels_search_map.get(search_text, [])
         label_results[search_text] = results
 

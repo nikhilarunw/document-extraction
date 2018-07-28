@@ -1,13 +1,13 @@
+import logging
+import os
+from subprocess import run
+
+from lxml import etree
+
 from extraction.base.BaseExtractor import BaseExtractor
 
-import os
-import glob
-from subprocess import run
-import logging
-from lxml import etree
-import pandas as pd
-
 logger = logging.getLogger(__name__)
+
 
 class PDFExtractor(BaseExtractor):
     """
@@ -19,7 +19,6 @@ class PDFExtractor(BaseExtractor):
         output_files = self.extract_file(self.input_file)
         text_boxes = self.read_text_boxes_from_xml(output_files['output_xml_file_path'])
         return text_boxes
-
 
     def extract_file(self, pdf_file_path):
         """
@@ -89,8 +88,24 @@ class PDFExtractor(BaseExtractor):
 
         text_boxes = []
 
+        # fontspec_map stores id to font info dict
+        fontspec_map = {}
+
         for page in pages:
             children = [child for child in page]
+
+            # Filter FontSpec tags
+            fontspec_tags = list(filter(lambda child: child.tag == 'fontspec', children))
+
+            for fontspec in fontspec_tags:
+                fontspec_info = {
+                    'id': fontspec.get('id'),
+                    'size': fontspec.get('size'),
+                    'family': fontspec.get('family'),
+                    'color': fontspec.get('color')
+                }
+
+                fontspec_map[fontspec.get('id')] = fontspec_info
 
             # Filter Text tags
             text_tags = list(filter(lambda child: child.tag == 'text', children))
@@ -104,8 +119,23 @@ class PDFExtractor(BaseExtractor):
                     text_content = text_content + str(child_tag.text if child_tag.text else '')
                     logger.debug("Children : {}\n".format(child_tag.text))
 
-                text_boxes.append([text_content, text_tag.get('top'), text_tag.get('left'), text_tag.get('width'),
-                                   text_tag.get('height'), page.get('number'), page.get('width'), page.get('height')])
+                fontspec = fontspec_map.get(text_tag.get('font'), {})
+
+                text_info = {
+                    'text': text_content,
+                    'top': text_tag.get('top'),
+                    'left': text_tag.get('left'),
+                    'width': text_tag.get('width'),
+                    'height': text_tag.get('height'),
+                    'pageNumber': page.get('number'),
+                    'pageWidth': page.get('width'),
+                    'pageHeight': page.get('height'),
+                    'fontSize': fontspec.get('size'),
+                    'fontFamily': fontspec.get('family'),
+                    'fontColor': fontspec.get('color'),
+                }
+
+                logger.debug("Text Info : {}\n".format(text_info))
+
+                text_boxes.append(text_info)
         return text_boxes
-
-

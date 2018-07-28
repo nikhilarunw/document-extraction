@@ -189,7 +189,7 @@ export class EditExtractionModel extends React.Component {
                       const configJson = JSON.parse(data.extractionModel.configJson);
 
                       const documentInspectorData = {
-                        ocrJson: JSON.parse(configJson.ocrJson || "[]"),
+                        ocrJson: JSON.parse(configJson.ocrJson || '{ "texts": [] }'),
                         annotatedJson: JSON.parse(configJson.annotatedJson || "{}")
                       }
 

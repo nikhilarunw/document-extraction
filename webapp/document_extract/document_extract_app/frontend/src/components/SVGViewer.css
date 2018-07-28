@@ -1,0 +1,17 @@
+.svg_viewer {
+  display: flex;
+  justify-content: center;
+  background-color: gray;
+  padding: 16px;
+}
+
+.svg_pages {
+  display: flex;
+  flex-direction: column;
+}
+
+.svg_page {
+  margin: 8px;
+  background-color: #FFF;
+  box-shadow: 0 10px 6px -6px #777;
+}

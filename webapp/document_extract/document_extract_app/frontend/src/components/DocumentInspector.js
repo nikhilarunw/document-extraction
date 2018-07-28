@@ -5,6 +5,7 @@ import {Tab, Tabs} from "react-toolbox/lib/tabs/index";
 import Button from 'react-toolbox/lib/button';
 import DocumentInspectorStyles from "./DocumentInspector.css";
 import Tooltip from 'react-toolbox/lib/tooltip';
+import SVGViewer from "./SVGViewer";
 
 const TooltipButton = Tooltip(Button);
 
@@ -100,6 +101,9 @@ export class DocumentInspector extends React.Component {
             title="OCR Output"
           />
           <Tabs index={this.state.tabIndex} onChange={this.handleFixedTabChange} fixed>
+            <Tab label='Viewer'>
+              <SVGViewer ocrJson={ocrJson}/>
+            </Tab>
             <Tab label='All'>
               <List selectable ripple>
                 <ListSubHeader caption='Texts'/>
@@ -108,7 +112,7 @@ export class DocumentInspector extends React.Component {
                     checked={!!selected_texts[index]}
                     onChange={(selected) => this.handleOnClickText(selected, index)}
                     selectable
-                    caption={text[0]}
+                    caption={text.text}
                   />
                 </div>)}
               </List>
@@ -134,7 +138,7 @@ export class DocumentInspector extends React.Component {
                 {Object.entries(texts_labels).map(([index, text]) => <div key={index}>
                   <ListItem
                     selectable
-                    caption={text[0]}
+                    caption={text.text}
                     rightActions={[<Button icon="delete"
                                            onClick={() => this.handleOnClickLabel(false, index)}></Button>]}
                   />
@@ -147,7 +151,7 @@ export class DocumentInspector extends React.Component {
                 {Object.entries(texts_values).map(([index, text]) => <div key={index}>
                   <ListItem
                     selectable
-                    caption={text[0]}
+                    caption={text.text}
                     rightActions={[<Button icon="delete"
                                            onClick={() => this.handleOnClickValue(false, index)}></Button>]}
                   />
