@@ -33,59 +33,76 @@ export default class SVGPage extends React.Component {
         return d.text;
       });
 
+    this.addSelectionListener();
+  }
+
+  addSelectionListener = () => {
+    const node = this.node;
+    let svg = select(node)
+
+    const selections_group = svg.append('g')
+      .attr('class', SVGPageStyles.selections_group)
 
     svg.on("mousedown", function () {
       const p = mouse(this);
-      svg.append("rect")
-        .attr("class", `${SVGPageStyles.selection}`)
-        .attr("rx", 6)
-        .attr("ry", 6)
+      selections_group.append('svg')
+        .attr('class', SVGPageStyles.selection_group)
         .attr("x", p[0])
         .attr("y", p[1])
+        .append("rect")
+        .attr("class", `${SVGPageStyles.selection_rect}`)
+        .attr("rx", 6)
+        .attr("ry", 6)
+        .attr("x", 0)
+        .attr("y", 0)
         .attr("width", 0)
         .attr("height", 0)
-    })
-      .on("mousemove", function () {
-        const s = svg.select(`rect.${SVGPageStyles.selection}`);
+    }).on("mousemove", function () {
+      const selection_group = selections_group.select(`svg.${SVGPageStyles.selection_group}`);
+      const selection_rect = selection_group.select(`rect.${SVGPageStyles.selection_rect}`)
 
-        if (!s.empty()) {
-          const p = mouse(this),
+      if (!selection_group.empty() && !selection_rect.empty()) {
+        const p = mouse(this),
 
-            d = {
-              x: parseInt(s.attr("x"), 10),
-              y: parseInt(s.attr("y"), 10),
-              width: parseInt(s.attr("width"), 10),
-              height: parseInt(s.attr("height"), 10)
-            },
-            move = {
-              x: p[0] - d.x,
-              y: p[1] - d.y
-            }
-          ;
-
-          if (move.x < 1 || (move.x * 2 < d.width)) {
-            d.x = p[0];
-            d.width -= move.x;
-          } else {
-            d.width = move.x;
+          d = {
+            x: parseInt(selection_group.attr("x"), 10),
+            y: parseInt(selection_group.attr("y"), 10),
+            width: parseInt(selection_rect.attr("width"), 10),
+            height: parseInt(selection_rect.attr("height"), 10)
+          },
+          move = {
+            x: p[0] - d.x,
+            y: p[1] - d.y
           }
+        ;
 
-          if (move.y < 1 || (move.y * 2 < d.height)) {
-            d.y = p[1];
-            d.height -= move.y;
-          } else {
-            d.height = move.y;
-          }
-
-          s.attr('x', d.x);
-          s.attr('y', d.y);
-          s.attr('width', d.width);
-          s.attr('height', d.height);
-
-          //console.log(d);
+        if (move.x < 1 || (move.x * 2 < d.width)) {
+          d.x = p[0];
+          d.width -= move.x;
+        } else {
+          d.width = move.x;
         }
-      }).on("mouseup", function () {
-      svg.select(`.${SVGPageStyles.selection}`).remove();
+
+        if (move.y < 1 || (move.y * 2 < d.height)) {
+          d.y = p[1];
+          d.height -= move.y;
+        } else {
+          d.height = move.y;
+        }
+
+        selection_group.attr('x', d.x);
+        selection_group.attr('y', d.y);
+        selection_rect.attr('width', d.width);
+        selection_rect.attr('height', d.height);
+
+        //console.log(d);
+      }
+    }).on("mouseup", function () {
+      selections_group.select(`.${SVGPageStyles.selection_group}`)
+        .attr('class', `${SVGPageStyles.selected_search_field}`)
+        .select(`${SVGPageStyles.selection_rect}`)
+        .attr('class', `${SVGPageStyles.selected_search_field}`)
+
     });
   }
 

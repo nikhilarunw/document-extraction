@@ -1,10 +1,23 @@
-.selection {
+.selection_rect {
   stroke: black;
   stroke-width: 1px;
   stroke-dasharray: 4px;
   stroke-opacity: 0.9;
   fill: gray;
   fill-opacity: 0.2;
+}
+
+.selection_group {
+
+}
+
+.selections_group {
+
+}
+
+.remove_selection_button {
+  stroke: gray;
+  fill: red;
 }
 
 .state {
@@ -22,4 +35,13 @@ svg text {
 
 svg text::selection {
   background: none;
+}
+
+.selected_search_field rect {
+  stroke: red;
+  stroke-width: 1px;
+  stroke-dasharray: 4px;
+  stroke-opacity: 0.9;
+  fill: gray;
+  fill-opacity: 0.2;
 }
