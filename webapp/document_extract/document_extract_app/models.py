@@ -1,6 +1,8 @@
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 
+from document_extract_app.search import DocumentIndex
+
 
 class ExtractRequest(models.Model):
     """
@@ -57,6 +59,14 @@ class Document(models.Model):
 
     status = models.CharField(max_length=32, default=STATUS_CREATED, choices=STATUS_CHOICES)
 
+    # Add indexing method to DocumentIndex
+    def indexing(self):
+        obj = DocumentIndex(
+            meta={'id': self.id},
+            ocr_json=self.ocr_json
+        )
+        obj.save()
+        return obj.to_dict(include_meta=True)
 
 class ExtractionModel(models.Model):
     """

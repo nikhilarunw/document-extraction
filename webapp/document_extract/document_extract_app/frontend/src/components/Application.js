@@ -27,8 +27,8 @@ export default class Application extends React.Component{
       <div className={ApplicationStyles.app_header}>
         <AppBar title='Document Extraction Application' fixed>
           <Navigation type='horizontal'>
-            <Link href={"/#/extract-requests"} label={"Requests"} icon={"folder"}/>
-            <Link href={"/#/extraction-models"} label={"Models"} icon={"all_inclusive"}/>
+            <Link href={"/#/extract-requests"} label={"Requests"} />
+            <Link href={"/#/extraction-models"} label={"Models"} />
           </Navigation>
         </AppBar>
       </div>

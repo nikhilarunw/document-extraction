@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'document_extract_app',
     'corsheaders',
     'graphene_django',
+    'django_extensions',
 ]
 
 

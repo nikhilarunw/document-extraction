@@ -31,22 +31,30 @@ def extract_with_search_and_layout_model(document, extraction_model):
     annotated_json = json.loads(annotated_json_string)
 
     texts_labels = annotated_json.get('texts_labels', [])
+    texts_values = annotated_json.get('texts_values', [])
 
-    labels_search_map = {}
+    texts_map = {}
 
     label_results = {}
+    value_results = {}
 
     for text in texts:
         search_text = text.get('text')
-        values = labels_search_map.get(search_text, [])
+        values = texts_map.get(search_text, [])
         values.append(text)
-        labels_search_map[search_text] = values
+        texts_map[search_text] = values
 
     for key, text in texts_labels.items():
         search_text = text.get('text')
-        results = labels_search_map.get(search_text, [])
+        results = texts_map.get(search_text, [])
         label_results[search_text] = results
 
+    for key, text in texts_values.items():
+        search_text = text.get('text')
+        results = texts_map.get(search_text, [])
+        value_results[search_text] = results
+
     return {
-        'extracted_labels': label_results
+        'extracted_labels': label_results,
+        'extracted_values': value_results
     }
