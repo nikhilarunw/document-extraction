@@ -14,7 +14,7 @@
     "formik": "^1.0.1",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
-    "postcss": "^7.0.0",
+    "postcss": "^7.0.36",
     "postcss-preset-env": "^5.2.2",
     "react": "^16.2.0",
     "react-apollo": "^2.1.9 ",
