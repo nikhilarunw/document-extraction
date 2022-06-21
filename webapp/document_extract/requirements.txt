@@ -17,7 +17,7 @@ iso8601==0.1.12
 jdcal==1.4
 lxml==4.2.3
 Markdown==2.6.11
-numpy==1.14.5
+numpy==1.22.0
 openpyxl==2.5.4
 pandas==0.23.3
 promise==2.1
